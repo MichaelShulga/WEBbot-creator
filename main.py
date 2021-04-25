@@ -4,7 +4,6 @@ import uuid
 
 from flask import Flask, render_template, redirect, send_file, request
 from flask_login import LoginManager, login_user, login_required, logout_user
-from flask_restful import Api
 
 from data import db_session
 from data.users import User
@@ -18,7 +17,6 @@ params.add_argument('--heroku', action='store_true')
 args = params.parse_args()
 
 app = Flask(__name__)
-api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'secret_key'
