@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<a href="/download_file_vk_bot" class="btn btn-success btn-lg" tabindex="-1" role="button" aria-disabled="true">Download client settings file</a>
+
+
+<form method="post" enctype="multipart/form-data">
+    <br>
+        <label for="file">Load modified client settings file</label>
+        <input type="file" class="form-control-file" id="file" name="file">
+
+    <br>
+    <label for="group_id">ID</label>
+    <input class="form-control" id="group_id" placeholder="vk group id" name="group_id">
+
+    <label for="token">TOKEN</label>
+    <input class="form-control" id="token" placeholder="vk group api token" name="token">
+
+    <br>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>
+
+{{message}}
+{% endblock %}
