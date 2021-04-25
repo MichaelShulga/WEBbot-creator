@@ -6,7 +6,6 @@ from flask import Flask, render_template, redirect, send_file, request
 from flask_login import LoginManager, login_user, login_required, logout_user
 from flask_restful import Api
 
-from app_api import users_resources
 from data import db_session
 from data.users import User
 from forms.user import RegisterForm, LoginForm
