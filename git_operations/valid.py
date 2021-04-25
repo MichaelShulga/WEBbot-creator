@@ -16,7 +16,7 @@ def is_python_file_valid(f):
 def is_file_damaged(f, original_file):
     source = f.read().decode('cp1251')
     f.seek(0)
-    with open(original_file, 'r') as orig:
+    with open(original_file, 'r', encoding='utf8') as orig:
         for i in orig.readlines():
             if ('class' in i or 'def' in i) and '#' not in i:
                 if i.strip() not in source:

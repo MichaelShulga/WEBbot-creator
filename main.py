@@ -9,17 +9,31 @@ from data import db_session
 from data.users import User
 from forms.user import RegisterForm, LoginForm
 
-from github_bot_file_commit.valid import *
-from github_bot_file_commit.client_branch import commit_files
+from git_operations.valid import *
+from git_operations.client_branch import ClientRepo
 
+
+# console params
 params = argparse.ArgumentParser()
 params.add_argument('--heroku', action='store_true')
 args = params.parse_args()
 
+# app init
 app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['SECRET_KEY'] = 'secret_key'
+
+
+# client repo init
+repo_name = "CLIENT_REPO"
+main_path = os.path.dirname(os.path.realpath(__file__))
+curr_dir = os.path.join(main_path, repo_name)
+heroku_bot_git_url = 'https://github.com/MichaelShulga/bot-creator-heroku'
+client_repo = ClientRepo(curr_dir, heroku_bot_git_url)
+
+# update client settings folder
+client_repo.update_client_settings()
 
 
 # необходимая функция для работы сего модуля
@@ -82,13 +96,20 @@ def index():
     return render_template('index.html')
 
 
+# creating bot
 @app.route('/vk_bot', methods=['POST', 'GET'])
 def vk_bot():
     if request.method == 'GET':
         return render_template('vk_bot.html')
     elif request.method == 'POST':
+        # bot.py
         f1 = request.files['file']
+
+        # additional.json
         group_id, token = request.form.get('group_id'), request.form.get('token')
+        additional = {"id": group_id, "token": token, "running": False, "errors": []}
+
+        # not correct data input
         if not f1:
             return render_template('vk_bot.html', message='Choose file')
         if not is_python_file_valid(f1):
@@ -99,16 +120,22 @@ def vk_bot():
             return render_template('vk_bot.html', message='Missing token or id')
         if not is_correct_vk_id_and_token(group_id, token):
             return render_template('vk_bot.html', message='Invalid token or id')
-        additional = {"id": group_id, "token": token, "running": False}
 
+        # create new client branch
+
+        # update client files
+        client_repo.update_bot_file(f1)
+        client_repo.update_additional_file(additional)
+
+        # commit_and_push
         branch = str(uuid.uuid4())
-        commit_files(branch, f1, additional)
+        repository, status = client_repo.commit_and_push(branch)
+
         print(branch)
-
-        return render_template('deploy.html',
-                               repository=f'https://github.com/MichaelShulga/bot-creator-heroku/tree/{branch}')
+        return render_template('deploy.html', repository=repository)
 
 
+#  download bot.py file
 @app.route('/download_file_vk_bot')
 def download_file_vk_bot():
     path = "client_settings/bot.py"
