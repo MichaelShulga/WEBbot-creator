@@ -131,7 +131,7 @@ def vk_bot():
         branch = str(uuid.uuid4())
         repository, status = client_repo.commit_and_push(branch)
 
-        details = {"branch": branch, "status": status}
+        details = {"REPOSITORY": repository, "STATUS": status}
         print(details)
         return render_template('deploy.html', repository=repository, details=details)
 

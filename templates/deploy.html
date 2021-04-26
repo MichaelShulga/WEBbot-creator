@@ -12,18 +12,14 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <form>
-        <div class="form-group row">
-          <label for="group_id" class="col-sm-2 col-form-label">BRANCH:</label>
-          <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="group_id" value="{{ details['branch'] }}">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="token" class="col-sm-2 col-form-label">STATUS:</label>
-          <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="token" value="{{ details['status'] }}">
-          </div>
-        </div>
+        {% for parameter in details %}
+            <div class="form-group row">
+              <label for="token" class="col-sm-2 col-form-label">{{ parameter }}</label>
+              <div class="col-sm-10">
+                <input type="text" readonly class="form-control-plaintext" id="token" value="{{ details[parameter] }}">
+              </div>
+            </div>
+        {% endfor %}
       </form>
     </div>
   </div>
