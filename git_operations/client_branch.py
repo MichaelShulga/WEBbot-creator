@@ -85,6 +85,7 @@ class ClientRepo:
             status = 'git push'
         else:
             status = 'no changes'
+            new_branch = 'master'
         return f'{self.url}/tree/{new_branch}', status
 
 
